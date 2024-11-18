@@ -1,4 +1,4 @@
-module.exports = {
+﻿module.exports = {
   apps: [{
     name: 'ilovesales-backend',
     script: 'server.js',
@@ -11,4 +11,4 @@ module.exports = {
       PORT: 3000
     }
   }]
-}; 
+};
