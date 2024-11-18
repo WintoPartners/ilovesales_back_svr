@@ -26,19 +26,29 @@ jobs:
         port: 2222
         script: |
           cd /home/user/app
+          
+          # 필요한 시스템 라이브러리 설치
+          sudo yum update -y
+          sudo yum install -y gcc-c++ make epel-release
+          sudo yum install -y centos-release-scl
+          sudo yum install -y devtoolset-7
+          source scl_source enable devtoolset-7
+          
+          # Git 설정
           git remote remove origin
           git remote add origin https://github.com/WintoPartners/ilovesales_back_svr.git
-          git remote -v
           git fetch origin
           git checkout dev || git checkout -b dev origin/dev
           git pull origin dev
           
-          # 필수 모듈 설치
-          npm install bcrypt
+          # Node.js 모듈 재설치
+          rm -rf node_modules
+          npm cache clean --force
+          npm install
           npm install --omit=dev
           
           # PM2 설정 및 실행
           cp ecosystem.config.cjs /home/user/app/ || echo "Config file already exists"
-          pm2 delete all || true  # 기존 프로세스 중지
+          pm2 delete all || true
           pm2 start ecosystem.config.cjs
           pm2 save
