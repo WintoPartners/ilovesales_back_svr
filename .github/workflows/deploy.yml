@@ -26,7 +26,8 @@ jobs:
         port: 2222
         script: |
           cd /home/user/app
-          git pull origin dev
-          npm install --production
-          cp ecosystem.config.js /home/user/app/
+          git fetch origin dev
+          git reset --hard origin/dev
+          npm install --omit=dev
+          cp ecosystem.config.js /home/user/app/ || echo "Config file already exists"
           pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js
