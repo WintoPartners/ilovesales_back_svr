@@ -1,2 +1,0 @@
-# ilovesales_back_svr
-ilovesales_back_svr
