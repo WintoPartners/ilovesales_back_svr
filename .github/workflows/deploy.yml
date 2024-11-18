@@ -33,5 +33,5 @@ jobs:
           git checkout dev || git checkout -b dev origin/dev
           git pull origin dev
           npm install --omit=dev
-          cp ecosystem.config.js /home/user/app/ || echo "Config file already exists"
-          pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js
+          cp ecosystem.config.cjs /home/user/app/ || echo "Config file already exists"
+          pm2 reload ecosystem.config.cjs || pm2 start ecosystem.config.cjs
