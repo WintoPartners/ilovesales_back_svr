@@ -26,9 +26,10 @@ jobs:
         port: 2222
         script: |
           cd /home/user/app
+          git remote remove origin
+          git remote add origin https://github.com/WintoPartners/ilovesales_back_svr.git
           git remote -v
-          git branch -a
-          git fetch --all
+          git fetch origin
           git checkout dev || git checkout -b dev origin/dev
           git pull origin dev
           npm install --omit=dev
