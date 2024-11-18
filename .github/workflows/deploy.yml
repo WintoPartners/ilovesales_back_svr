@@ -32,6 +32,13 @@ jobs:
           git fetch origin
           git checkout dev || git checkout -b dev origin/dev
           git pull origin dev
+          
+          # 필수 모듈 설치
+          npm install bcrypt
           npm install --omit=dev
+          
+          # PM2 설정 및 실행
           cp ecosystem.config.cjs /home/user/app/ || echo "Config file already exists"
-          pm2 reload ecosystem.config.cjs || pm2 start ecosystem.config.cjs
+          pm2 delete all || true  # 기존 프로세스 중지
+          pm2 start ecosystem.config.cjs
+          pm2 save
