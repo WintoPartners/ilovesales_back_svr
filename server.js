@@ -794,7 +794,7 @@ app.post('/retry', async (req, res) => {
       const deleteQuery = 'DELETE FROM ia WHERE ia_id = $1';
       await pool.query(deleteQuery, [userId]);
     }
-     // parseLogData 함수는 로그 데이터를 파싱하는 가상의 함수입니다.
+     // parseLogData 함��는 로그 데이터를 파싱하는 가상의 함수입니다.
 
     const contentLines = project.split('\n'); // 내용을 줄 단위로 분리
     const projectInfo = {};
@@ -1307,7 +1307,7 @@ app.post('/dalle-edit', upload.single('image'), async (req, res) => {
   const { prompt } = req.body;
   const imagePath = req.file.path;
   try {
-    const maskPath = 'C:/dev/work/upload/sample-mask.png';
+    const maskPath = '/home/user/upload/sample-mask.png';
     console.log(`Using mask at: ${maskPath}`);
 
     // 마스크 이미지가 올바른지 확인
