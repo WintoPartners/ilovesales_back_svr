@@ -1,0 +1,31 @@
+name: Deploy to NCP Server
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Deploy to NCP Server
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.NCP_HOST }}
+        username: ${{ secrets.NCP_USERNAME }}
+        password: ${{ secrets.NCP_PASSWORD }}
+        script: |
+          cd /home/user/app
+          git pull origin main
+          npm install --production
+          cp ecosystem.config.js /home/user/app/
+          pm2 reload ecosystem.config.js || pm2 start ecosystem.config.js
