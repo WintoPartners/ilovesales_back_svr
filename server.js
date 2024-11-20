@@ -21,6 +21,14 @@ import pdf from 'pdf-parse';
 const { Pool } = pkg;
 const pgStore = pgSession(session);
 dotenv.config();
+if (!process.env.OPENAI_API_KEY) {
+  console.error('OpenAI API key is missing');
+  process.exit(1);
+}
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 const app = express();
 app.set('trust proxy', 1);
@@ -1583,3 +1591,5 @@ const PORT = process.env.PORT || 3001;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+
