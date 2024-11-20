@@ -1604,6 +1604,23 @@ app.get('/get-customer-key', (req, res) => {
 // }));
 
 // 포트 설정을 명확하게 고정
+// const PORT = 3001;
+// app.listen(PORT, '0.0.0.0', () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
+
+const cors = require('cors');
+const express = require('express');
+// const app = express();
+
+// CORS 설정 추가
+app.use(cors({
+  origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro'],
+  credentials: true
+}));
+
+// 포트 설정을 명확하게 고정
 const PORT = 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
