@@ -1600,7 +1600,7 @@ app.get('/get-customer-key', (req, res) => {
 
 
 app.use(cors({
-  origin: ['https://api.metheus.pro', 'http://localhost:3000'],
+  origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro'],
   credentials: true
 }));
 
