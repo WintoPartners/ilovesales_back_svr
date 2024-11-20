@@ -2,13 +2,12 @@
   apps: [{
     name: 'ilovesales-backend',
     script: 'server.js',
-    instances: 1,
-    autorestart: true,
-    watch: false,
-    max_memory_restart: '1G',
     env: {
-      NODE_ENV: 'production',
-      PORT: 3001
-    }
+      PORT: 3001,
+      NODE_ENV: 'production'
+    },
+    instances: 1,
+    exec_mode: 'cluster',
+    listen_address: '0.0.0.0'
   }]
 };
