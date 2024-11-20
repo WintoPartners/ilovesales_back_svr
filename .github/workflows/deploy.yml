@@ -20,10 +20,13 @@ jobs:
         password: ${{ secrets.NCP_PASSWORD }}
         port: 2222
         script: |
+          # 절대 경로 사용
+          mkdir -p /home/user/app
           cd /home/user/app
           
-          # 환경변수 파일 업데이트
-          cat > .env << EOL
+          # 환경변수 파일 생성 (echo로 각 라인 확인)
+          echo "Creating .env file..."
+          cat > /home/user/app/.env << EOL
           OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
           ENV=${{ secrets.ENV }}
           URL=${{ secrets.URL }}
@@ -42,7 +45,11 @@ jobs:
           TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}
           EOL
           
-          # Git에서 최신 코드만 가져오기
+          # 환경변수 파일 확인
+          echo "Checking .env file..."
+          cat /home/user/app/.env
+          
+          # Git 업데이트
           git fetch origin dev
           git reset --hard origin/dev
           
