@@ -19,11 +19,20 @@ jobs:
         username: ${{ secrets.NCP_USERNAME }}
         password: ${{ secrets.NCP_PASSWORD }}
         port: 2222
-        timeout: 70s
+        timeout: 60s
         command_timeout: 30m
         script: |
-          # 절대 경로 사용
-          mkdir -p /home/user/app
+          # Git 설정
+          git config --global user.email "imseungkk@gmail.com"
+          git config --global user.name "kooky-lim"
+
+          # 기존 앱 백업
+          timestamp=$(date +%Y%m%d_%H%M%S)
+          cp -r /home/user/app /home/user/app_backup_$timestamp
+
+          # 깃 리포지토리 클론
+          rm -rf /home/user/app
+          git clone -b dev https://github.com/WintoPartners/ilovesales_back_svr.git /home/user/app
           cd /home/user/app
 
           # 환경변수 파일 생성
@@ -47,14 +56,14 @@ jobs:
           TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}
           EOL
 
-          # 환경변수 파일 확인
-          echo "Checking .env file..."
-          cat /home/user/app/.env
+          # ecosystem.config.cjs 복원
+          cp /home/user/app_backup_$timestamp/ecosystem.config.cjs /home/user/app/
 
-          # Git 업데이트
-          git fetch origin dev
-          git reset --hard origin/dev
+          # 권한 설정
+          chown -R root:root /home/user/app
+          chmod -R 755 /home/user/app
 
           # PM2 재시작
-          pm2 reload ecosystem.config.cjs || pm2 start ecosystem.config.cjs
+          pm2 delete all || true
+          pm2 start ecosystem.config.cjs
           pm2 save
