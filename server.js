@@ -19,7 +19,6 @@ import Replicate from "replicate";
 import bcrypt from "bcrypt";
 import bodyParser from 'body-parser';
 import pdf from 'pdf-parse';
-import cors from 'cors';
 
 // 환경변수 로드 디버깅
 // 환경변수 로드를 가장 먼저 실행
