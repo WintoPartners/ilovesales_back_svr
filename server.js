@@ -1580,6 +1580,6 @@ app.get('/get-customer-key', (req, res) => {
 
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {    // '0.0.0.0'으로 모든 IP에서 접근 가능하도록 수정
     console.log(`Server running on port ${PORT}`);
 });
