@@ -56,8 +56,23 @@ jobs:
           TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}
           EOL
 
-          # ecosystem.config.cjs 복원
-          cp /home/user/app_backup_$timestamp/ecosystem.config.cjs /home/user/app/
+          # PM2 설정 파일 생성
+          cat > /home/user/app/ecosystem.config.js << EOL
+          module.exports = {
+            apps: [{
+              name: 'ilovesales-backend',
+              script: 'ts-node',
+              args: 'test-server.ts',
+              instances: 1,
+              autorestart: true,
+              watch: false,
+              max_memory_restart: '1G',
+              env: {
+                NODE_ENV: 'production'
+              }
+            }]
+          }
+          EOL
 
           # 권한 설정
           chown -R root:root /home/user/app
@@ -65,5 +80,5 @@ jobs:
 
           # PM2 재시작
           pm2 delete all || true
-          pm2 start ecosystem.config.cjs
+          pm2 start ecosystem.config.js
           pm2 save

@@ -1,7 +1,6 @@
  // Start of Selection
 import express from "express";
 import multer from "multer";
-import path from "path";
 import fs from "fs";
 import axios from "axios";
 import FormData from "form-data";
