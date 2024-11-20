@@ -3,7 +3,7 @@
     name: 'ilovesales-backend',
     script: 'server.js',
     env: {
-      PORT: 3001,
+      PORT: 3000,
       NODE_ENV: 'production'
     },
     instances: 1,
