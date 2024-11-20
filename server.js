@@ -1599,13 +1599,13 @@ app.get('/get-customer-key', (req, res) => {
 
 
 
-app.use(cors({
-  origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro'],
-  credentials: true
-}));
+// app.use(cors({
+//   origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro'],
+//   credentials: true
+// }));
 
 // 포트 설정을 명확하게 고정
-const PORT = 3000;  // 3000으로 고정
+const PORT = 3000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
