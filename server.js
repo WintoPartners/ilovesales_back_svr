@@ -8,6 +8,7 @@ import FormData from "form-data";
 import cors from "cors";
 import OpenAI from "openai";
 import * as dotenv from "dotenv";
+import path from "path";
 import pkg from 'pg';
 import session from 'express-session';
 import { v4 as uuidv4 } from 'uuid';
@@ -18,12 +19,18 @@ import Replicate from "replicate";
 import bcrypt from "bcrypt";
 import bodyParser from 'body-parser';
 import pdf from 'pdf-parse';
+import cors from 'cors';
 
 // 환경변수 로드 디버깅
-console.log('Loading environment variables...');
+// 환경변수 로드를 가장 먼저 실행
+console.log('Current directory:', process.cwd());
 dotenv.config();
+
+// 환경변수 확인
+console.log('Environment variables loaded:');
+console.log('PORT:', process.env.PORT);
+console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
-console.log('Current working directory:', process.cwd());
 
 const { Pool } = pkg;
 const pgStore = pgSession(session);
@@ -1592,10 +1599,13 @@ app.get('/get-customer-key', (req, res) => {
 
 
 
+app.use(cors({
+  origin: ['https://app.metheus.pro', 'http://localhost:3000'],
+  credentials: true
+}));
 
-const PORT = process.env.PORT || 3001;
+// 포트 설정을 명확하게 고정
+const PORT = 3000;  // 3000으로 고정
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
-
-
