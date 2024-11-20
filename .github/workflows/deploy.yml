@@ -18,7 +18,7 @@ jobs:
         host: ${{ secrets.NCP_HOST }}
         username: ${{ secrets.NCP_USERNAME }}
         password: ${{ secrets.NCP_PASSWORD }}
-        port: 22
+        port: 2424
         timeout: 180s
         command_timeout: 30m
         script: |
