@@ -19,12 +19,17 @@ jobs:
         username: ${{ secrets.NCP_USERNAME }}
         password: ${{ secrets.NCP_PASSWORD }}
         port: 2222
+        timeout: 60s
+        command_timeout: 30m
         script: |
+          # 연결 테스트
+          echo "Connection successful"
+          
           # 절대 경로 사용
           mkdir -p /home/user/app
           cd /home/user/app
           
-          # 환경변수 파일 생성 (echo로 각 라인 확인)
+          # 환경변수 파일 생성
           echo "Creating .env file..."
           cat > /home/user/app/.env << EOL
           OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
@@ -47,12 +52,16 @@ jobs:
           
           # 환경변수 파일 확인
           echo "Checking .env file..."
-          cat /home/user/app/.env
+          ls -la /home/user/app/.env
           
           # Git 업데이트
+          echo "Updating git repository..."
           git fetch origin dev
           git reset --hard origin/dev
           
           # PM2 재시작
+          echo "Restarting PM2..."
           pm2 reload ecosystem.config.cjs || pm2 start ecosystem.config.cjs
           pm2 save
+          
+          echo "Deployment completed"
