@@ -24,9 +24,9 @@ dotenv.config();
 console.log('OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
 console.log('Current working directory:', process.cwd());
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY
+// });
 
 const { Pool } = pkg;
 const pgStore = pgSession(session);
