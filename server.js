@@ -1,3 +1,4 @@
+ // Start of Selection
 import express from "express";
 import multer from "multer";
 import path from "path";
@@ -24,20 +25,15 @@ dotenv.config();
 console.log('OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
 console.log('Current working directory:', process.cwd());
 
-// const openai = new OpenAI({
-//   apiKey: process.env.OPENAI_API_KEY
-// });
-
 const { Pool } = pkg;
 const pgStore = pgSession(session);
-dotenv.config();
 if (!process.env.OPENAI_API_KEY) {
   console.error('OpenAI API key is missing');
   process.exit(1);
 }
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
+  apiKey: process.env.OPENAI_API_KEY.trim() // 공백 제거
 });
 
 const app = express();
@@ -111,9 +107,9 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY,
+// });
 
 async function getProjectInfoByUserIp(userId) {
     const query = `

@@ -8,6 +8,7 @@
     },
     instances: 1,
     exec_mode: 'cluster',
-    listen_address: '0.0.0.0'
+    listen_address: '0.0.0.0',
+    env_file: '/home/user/app/.env'
   }]
 };
