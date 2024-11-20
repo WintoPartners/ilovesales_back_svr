@@ -1604,7 +1604,7 @@ app.get('/get-customer-key', (req, res) => {
 // }));
 
 // 포트 설정을 명확하게 고정
-const PORT = 3000;
+const PORT = 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
