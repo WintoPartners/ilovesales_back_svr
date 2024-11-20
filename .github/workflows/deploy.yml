@@ -32,7 +32,7 @@ jobs:
           sudo yum install -y gcc-c++ make epel-release
           sudo yum install -y centos-release-scl
           sudo yum install -y devtoolset-7
-          source scl_source enable devtoolset-
+          source scl_source enable devtoolset-7
           
           # Git 설정
           git remote remove origin
