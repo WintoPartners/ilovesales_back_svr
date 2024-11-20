@@ -12,6 +12,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.17.0'
+
     - name: Deploy to NCP Server
       uses: appleboy/ssh-action@v1.0.0
       with:
@@ -19,7 +24,7 @@ jobs:
         username: ${{ secrets.NCP_USERNAME }}
         password: ${{ secrets.NCP_PASSWORD }}
         port: 2222
-        timeout: 60s
+        timeout: 120s
         command_timeout: 30m
         script: |
           # 연결 테스트
@@ -62,6 +67,10 @@ jobs:
           # PM2 재시작
           echo "Restarting PM2..."
           pm2 reload ecosystem.config.cjs || pm2 start ecosystem.config.cjs
+          pm2 save
+          
+          pm2 delete all || true
+          pm2 start ecosystem.config.cjs
           pm2 save
           
           echo "Deployment completed"
