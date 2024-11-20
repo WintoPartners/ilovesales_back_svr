@@ -19,7 +19,7 @@ jobs:
         username: ${{ secrets.NCP_USERNAME }}
         password: ${{ secrets.NCP_PASSWORD }}
         port: 2222
-        timeout: 60s
+        timeout: 70s
         command_timeout: 30m
         script: |
           # 절대 경로 사용
