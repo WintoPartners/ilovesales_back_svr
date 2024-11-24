@@ -90,11 +90,21 @@ if(process.env.ENV === 'production'){
 //   origin: process.env.URL,
 //   credentials: true, // withCredentials: true와 함께 사용하려면 true로 설정
 // };
+// CORS 설정 수정
 const corsOptions = {
-  origin: ['https://app.metheus.pro', 'http://localhost:3000'],
-  credentials: true
+  origin: [
+    'https://app.metheus.pro',
+    'https://api.metheus.pro',
+    'http://localhost:3000',
+    'http://localhost:3001'
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(cors(corsOptions));
+// preflight 요청을 위한 OPTIONS 처리
+app.options('*', cors(corsOptions));
 
 // app.use(cors(corsOptions));
 // app.use((req, res, next) => {
