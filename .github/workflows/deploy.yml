@@ -9,49 +9,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
     - name: Deploy to NCP Server
       uses: appleboy/ssh-action@v1.0.0
       with:
         host: ${{ secrets.NCP_HOST }}
-        username: ${{ secrets.NCP_USERNAME }}
+        username: root
         password: ${{ secrets.NCP_PASSWORD }}
-        port: 2424
-        timeout: 180s
-        command_timeout: 30m
+        port: 22
         script: |
-          # Node.js 18.x 설치
-          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt-get install -y nodejs
-
-          # Git 설정
-          git config --global user.email "imseungkk@gmail.com"
-          git config --global user.name "kooky-lim"
-
           # 기존 앱 백업
           timestamp=$(date +%Y%m%d_%H%M%S)
           cp -r /home/user/app /home/user/app_backup_$timestamp
 
-          # 깃 리포지토리 클론
-          rm -rf /home/user/app
-          git clone -b dev https://github.com/WintoPartners/ilovesales_back_svr.git /home/user/app
+          # 깃 리포지토리 업데이트
           cd /home/user/app
+          git fetch origin
+          git reset --hard origin/dev
 
-          # 의존성 설치
-          npm install
-
-          # 환경변수 파일 생성
-          echo "Creating .env file..."
-          cat > /home/user/app/.env << EOL
+          # .env 파일 생성
+          cat > .env << EOL
           OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
-          ENV=${{ secrets.ENV }}
+          ENV=production
           URL=${{ secrets.URL }}
           DBPASSWORD=${{ secrets.DBPASSWORD }}
           DBURL=${{ secrets.DBURL }}
           CLIENTSECRET=${{ secrets.CLIENTSECRET }}
-          FILEPATH=${{ secrets.FILEPATH }}
+          FILEPATH=/home/user/app/uploads
           CLOVAURL=${{ secrets.CLOVAURL }}
           GPTSKEY1=${{ secrets.GPTSKEY1 }}
           GPTSKEY2=${{ secrets.GPTSKEY2 }}
@@ -62,27 +45,6 @@ jobs:
           EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}
           TOSS_SECRET_KEY=${{ secrets.TOSS_SECRET_KEY }}
           EOL
-
-          # PM2 설정 파일 생성
-          cat > /home/user/app/ecosystem.config.cjs << EOL
-          module.exports = {
-            apps: [{
-              name: 'ilovesales-backend',
-              script: 'server.js',
-              instances: 1,
-              autorestart: true,
-              watch: false,
-              max_memory_restart: '1G',
-              env: {
-                NODE_ENV: 'production'
-              }
-            }]
-          }
-          EOL
-
-          # 권한 설정
-          chown -R root:root /home/user/app
-          chmod -R 755 /home/user/app
 
           # PM2 재시작
           pm2 delete all || true
