@@ -15,8 +15,16 @@ jobs:
         host: ${{ secrets.NCP_HOST }}
         username: root
         password: ${{ secrets.NCP_PASSWORD }}
-        port: 22
+        port: 2424
+        timeout: 10s
+        command_timeout: 10m
         script: |
+          # 방화벽 설정
+          ufw allow 2424
+          ufw allow 3001
+          ufw allow ssh
+          ufw --force enable
+
           # 기존 앱 백업
           timestamp=$(date +%Y%m%d_%H%M%S)
           cp -r /home/user/app /home/user/app_backup_$timestamp
