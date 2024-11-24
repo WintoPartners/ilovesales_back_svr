@@ -92,7 +92,7 @@ if(process.env.ENV === 'production'){
 // };
 // CORS 설정 수정
 const corsOptions = {
-  origin: process.env.URL,
+  origin: 'https://app.metheus.pro',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -1673,4 +1673,48 @@ app.get('/api/db-test', async (req, res) => {
 const PORT = 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
+});
+
+//cors 설정 추가
+
+
+app.get('/api/gpt-test', async (req, res) => {
+  try {
+    const assistant = await openai.beta.assistants.retrieve(
+      "asst_s0o86hB2SRUg6uN9RcLeYb0U"  // 고정된 어시스턴트 ID 사용
+    );
+    
+    const thread = await openai.beta.threads.create();
+
+    await openai.beta.threads.messages.create(thread.id, {
+      role: "user",
+      content: "넌 잘 작동되고있니?"
+    });
+
+    const run = await openai.beta.threads.runs.create(thread.id, {
+      assistant_id: assistant.id,
+      instructions: "",
+    });
+
+    await checkRunStatus(openai, thread.id, run.id);
+
+    const message = await openai.beta.threads.messages.list(thread.id);
+    const contents = message.body.data[0].content[0].text.value;
+
+    res.json({ 
+      success: true, 
+      message: contents,
+      assistantId: assistant.id,
+      threadId: thread.id
+    });
+
+  } catch (error) {
+    console.error('GPT API 테스트 실패:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message,
+      stack: error.stack,
+      details: error.response?.data || '상세 오류 정보 없음'
+    });
+  }
 });
