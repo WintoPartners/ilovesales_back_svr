@@ -1677,7 +1677,8 @@ app.listen(PORT, '0.0.0.0', () => {
 
 //cors 설정 추가
 
-
+console.log('OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
+console.log('OPENAI_API_KEY length:', process.env.OPENAI_API_KEY?.length);
 app.get('/api/gpt-test', async (req, res) => {
   try {
     // 새로운 어시스턴트 생성
@@ -1691,7 +1692,7 @@ app.get('/api/gpt-test', async (req, res) => {
 
     await openai.beta.threads.messages.create(thread.id, {
       role: "user",
-      content: "넌 잘 작동되고있니?"
+      content: "넌 잘 작동되고 있니?"
     });
 
     const run = await openai.beta.threads.runs.create(thread.id, {
