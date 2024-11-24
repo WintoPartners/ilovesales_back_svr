@@ -1609,17 +1609,58 @@ app.get('/get-customer-key', (req, res) => {
 // });
 
 
-// const cors = require('cors');
-const express = require('express');
+// // const cors = require('cors');
+// const express = require('express');
+// // const app = express();
+
+// // CORS 설정 추가
+// app.use(cors({
+//   origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro', 'http://localhost:3001'],
+//   credentials: true
+// }));
+
+// // 포트 설정을 명확하게 고정
+// const PORT = 3001;
+// app.listen(PORT, '0.0.0.0', () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
+
+// ... 기존 코드 ...
+
+// 이 부분 제거
+// const express = require('express');
 // const app = express();
 
-// CORS 설정 추가
-app.use(cors({
-  origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro', 'http://localhost:3001'],
-  credentials: true
-}));
+// CORS 설정은 기존 코드 사용
+// app.use(cors({
+//   origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro', 'http://localhost:3001'],
+//   credentials: true
+// }));
 
-// 포트 설정을 명확하게 고정
+
+app.get('/api/test', (req, res) => {
+  res.json({ 
+    message: 'API is working!',
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.get('/api/db-test', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT NOW()');
+    res.json({ 
+      status: 'Database connected!',
+      serverTime: result.rows[0].now
+    });
+  } catch (err) {
+    console.error('Database connection error:', err);
+    res.status(500).json({ 
+      error: 'Database connection failed',
+      details: err.message
+    });
+  }
+});
+// 포트 설정 통일
 const PORT = 3001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
