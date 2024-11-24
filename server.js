@@ -1615,7 +1615,7 @@ const express = require('express');
 
 // CORS 설정 추가
 app.use(cors({
-  origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro'],
+  origin: ['https://api.metheus.pro', 'http://localhost:3000', 'https://app.metheus.pro', 'http://localhost:3001'],
   credentials: true
 }));
 
