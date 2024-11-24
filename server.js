@@ -92,12 +92,7 @@ if(process.env.ENV === 'production'){
 // };
 // CORS 설정 수정
 const corsOptions = {
-  origin: [
-    'https://app.metheus.pro',
-    'https://api.metheus.pro',
-    'http://localhost:3000',
-    'http://localhost:3001'
-  ],
+  origin: process.env.URL,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
