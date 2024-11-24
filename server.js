@@ -86,13 +86,17 @@ if(process.env.ENV === 'production'){
 
 
 
+// const corsOptions = {
+//   origin: process.env.URL,
+//   credentials: true, // withCredentials: true와 함께 사용하려면 true로 설정
+// };
 const corsOptions = {
-  origin: process.env.URL,
-  credentials: true, // withCredentials: true와 함께 사용하려면 true로 설정
+  origin: ['https://app.metheus.pro', 'http://localhost:3000'],
+  credentials: true
 };
-
-
 app.use(cors(corsOptions));
+
+// app.use(cors(corsOptions));
 // app.use((req, res, next) => {
 //   res.header('Access-Control-Allow-Credentials', 'true');
 //   next();
@@ -1640,7 +1644,7 @@ app.get('/get-customer-key', (req, res) => {
 
 app.get('/api/test', (req, res) => {
   res.json({ 
-    message: 'API is working!',
+    message: 'API is working! 작동중!!',
     timestamp: new Date().toISOString()
   });
 });
@@ -1649,13 +1653,13 @@ app.get('/api/db-test', async (req, res) => {
   try {
     const result = await pool.query('SELECT NOW()');
     res.json({ 
-      status: 'Database connected!',
+      status: 'Database connected! 데이터베이스 연결 성공!!',
       serverTime: result.rows[0].now
     });
   } catch (err) {
     console.error('Database connection error:', err);
     res.status(500).json({ 
-      error: 'Database connection failed',
+      error: 'Database connection failed 데이터베이스 연결 실패!!',
       details: err.message
     });
   }
