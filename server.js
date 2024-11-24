@@ -1680,9 +1680,12 @@ app.listen(PORT, '0.0.0.0', () => {
 
 app.get('/api/gpt-test', async (req, res) => {
   try {
-    const assistant = await openai.beta.assistants.retrieve(
-      "asst_s0o86hB2SRUg6uN9RcLeYb0U"  // 고정된 어시스턴트 ID 사용
-    );
+    // 새로운 어시스턴트 생성
+    const assistant = await openai.beta.assistants.create({
+      name: "Test Assistant",
+      instructions: "당신은 친절한 AI 어시스턴트입니다. 사용자의 질문에 한국어로 명확하게 답변해주세요.",
+      model: "gpt-4-1106-preview"
+    });
     
     const thread = await openai.beta.threads.create();
 
@@ -1693,13 +1696,16 @@ app.get('/api/gpt-test', async (req, res) => {
 
     const run = await openai.beta.threads.runs.create(thread.id, {
       assistant_id: assistant.id,
-      instructions: "",
+      instructions: "사용자의 질문에 한국어로 친절하게 답변해주세요.",
     });
 
     await checkRunStatus(openai, thread.id, run.id);
 
     const message = await openai.beta.threads.messages.list(thread.id);
     const contents = message.body.data[0].content[0].text.value;
+
+    // 사용이 끝난 어시스턴트와 스레드 정리
+    await openai.beta.assistants.del(assistant.id);
 
     res.json({ 
       success: true, 
