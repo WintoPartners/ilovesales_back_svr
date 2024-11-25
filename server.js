@@ -1486,21 +1486,43 @@ async function fetchAndCheck(recognizedText, threadId) {
         await insertIntoIaTable(depthContents, userId); // 실제 삽입 로직을 호출
     }
 }
-
+// async function insertIntoIaTable(depthContents, userId) {
+    
+//   const query = `
+//     INSERT INTO ia (ia_id, ia_num, depth1, depth2, depth3, depth4)
+//     VALUES ($1, $2, $3, $4, $5, $6)
+//   `;
+//   const values = [userId, ...depthContents];
+//   try {
+//     const res = await pool.query(query, values);
+//   } catch (err) {
+//     console.error('Insertion error:', err);
+//   }
+// }
 
   async function insertIntoIaTable(depthContents, userId) {
-    
     const query = `
       INSERT INTO ia (ia_id, ia_num, depth1, depth2, depth3, depth4)
       VALUES ($1, $2, $3, $4, $5, $6)
     `;
-    const values = [userId, ...depthContents];
+    
+    // ia_num(두 번째 값)이 빈 문자열이면 null로 변환
+    const sanitizedDepthContents = depthContents.map((content, index) => {
+        if (index === 0 && content === "") {
+            return null;  // 첫 번째 숫자가 비어있으면 null
+        }
+        return content;
+    });
+    
+    const values = [userId, ...sanitizedDepthContents];
+    
     try {
-      const res = await pool.query(query, values);
+        const res = await pool.query(query, values);
     } catch (err) {
-      console.error('Insertion error:', err);
+        console.error('Insertion error:', err);
+        throw err;  // 에러를 상위로 전파하여 디버깅을 용이하게 함
     }
-  }
+}
   
   async function checkRunStatus(client, threadId, runId) {
     let run = await client.beta.threads.runs.retrieve(threadId, runId);
@@ -1675,7 +1697,7 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-//cors 설정 추가
+//GPT API 테스트
 
 console.log('OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
 console.log('OPENAI_API_KEY length:', process.env.OPENAI_API_KEY?.length);
