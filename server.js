@@ -37,9 +37,17 @@ if (!process.env.OPENAI_API_KEY) {
   process.exit(1);
 }
 
+// const openai = new OpenAI({
+//   apiKey: process.env.OPENAI_API_KEY.trim() // 공백 제거
+// });
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY.trim() // 공백 제거
+  apiKey: process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.trim() : null
 });
+// API 키 확인
+if (!process.env.OPENAI_API_KEY) {
+  console.error('OpenAI API key is missing');
+  // process.exit(1); // 서버 종료는 선택사항
+}
 
 const app = express();
 app.set('trust proxy', 1);
@@ -1343,7 +1351,7 @@ app.post('/dalle-edit', upload.single('image'), async (req, res) => {
       throw new Error('Mask image not found');
     }
 
-    // API 호출 및 응답 확인
+    // API 호�� 및 응답 확인
     const image = await dalle(imagePath, prompt, maskPath);
     console.log('API response:', image);
 
@@ -1506,12 +1514,13 @@ async function fetchAndCheck(recognizedText, threadId) {
       VALUES ($1, $2, $3, $4, $5, $6)
     `;
     
-    // ia_num(두 번째 값)이 빈 문자열이면 null로 변환
+    // 문자열 길이를 50자로 제한
     const sanitizedDepthContents = depthContents.map((content, index) => {
         if (index === 0 && content === "") {
-            return null;  // 첫 번째 숫자가 비어있으면 null
+            return null;
         }
-        return content;
+        // 문자열인 경우에만 substring 적용
+        return typeof content === 'string' ? content.substring(0, 50) : content;
     });
     
     const values = [userId, ...sanitizedDepthContents];
@@ -1520,7 +1529,7 @@ async function fetchAndCheck(recognizedText, threadId) {
         const res = await pool.query(query, values);
     } catch (err) {
         console.error('Insertion error:', err);
-        throw err;  // 에러를 상위로 전파하여 디버깅을 용이하게 함
+        throw err;
     }
 }
   
@@ -1747,3 +1756,54 @@ app.get('/api/gpt-test', async (req, res) => {
     });
   }
 });
+
+
+// 전역 로깅 미들웨어 추가 (CORS 설정 다음에 위치)
+app.use((req, res, next) => {
+  console.log(`\n[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  if (req.body && Object.keys(req.body).length > 0) {
+    console.log('Body:', JSON.stringify(req.body, null, 2));
+  }
+  next();
+});
+
+// 기존 라우트들에 로깅 추가
+app.post('/upload', upload.single('file'), async (req, res) => {
+  console.log('[/upload] 파일 업로드 요청 시작');
+  try {
+    // ... 기존 코드 ...
+    console.log('[/upload] 파일 업로드 성공:', file.originalname);
+    res.json({ success: true });
+  } catch (error) {
+    console.error('[/upload] 에러 발생:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/gpt-test', async (req, res) => {
+  console.log('[/api/gpt-test] GPT 테스트 요청 시작');
+  try {
+    // ... 기존 코드 ...
+    console.log('[/api/gpt-test] GPT 응답 성공');
+    res.json({ success: true, message: contents });
+  } catch (error) {
+    console.error('[/api/gpt-test] GPT 호출 실패:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 다른 라우트들도 비슷하게 로깅 추가...
+
+// 에러 핸들링 미들웨어 (맨 마지막에 추가)
+app.use((err, req, res, next) => {
+  console.error('서버 에러 발생:', err);
+  res.status(500).json({ 
+    error: err.message,
+    path: req.path,
+    method: req.method,
+    timestamp: new Date().toISOString()
+  });
+});
+
+//로그 관련 수정
